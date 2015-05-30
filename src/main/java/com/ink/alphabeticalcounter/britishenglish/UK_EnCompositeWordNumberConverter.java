@@ -5,6 +5,7 @@ import com.ink.alphabeticalcounter.NumberWordConverter;
 import com.ink.alphabeticalcounter.WordNumber;
 import com.ink.alphabeticalcounter.britishenglish.domain.UK_EnBaseWordNumber;
 import com.ink.alphabeticalcounter.britishenglish.domain.UK_EnBigWordNumber;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,10 +29,11 @@ public class UK_EnCompositeWordNumberConverter implements NumberWordConverter {
 
         int numberLength = String.valueOf(number).length();
 
-        if(!canHandleNumber(numberLength)) {
+        if (!canHandleNumber(numberLength)) {
             throw new IllegalArgumentException("The number inserted is not valid, can handle numbers between -/+ ");
         }
-        if(number == 0) {
+
+        if (number == 0) {
             return UK_EnBaseWordNumber.ZERO.getValueAsWord();
         }
 
@@ -43,20 +45,20 @@ public class UK_EnCompositeWordNumberConverter implements NumberWordConverter {
         for (int i = 0; i < tripletCount; i++) {
             tripletValue = number % 1000;
 
-            if (tripletValue > 0) {
+            if (tripletValue > 0 && i > 0 && numberBuilder.length() > 0) {
                 numberBuilder.insert(0, " ");
             }
 
             numberBuilder.insert(0, numberConverterMap.get(i).getNumberAsWord(tripletValue));
 
             if (i == 0 && number > 999 && tripletValue > 0 && tripletValue < 100) {
-                numberBuilder.insert(0, AND_STRING + " ");
+                numberBuilder.insert(0, String.format("%s ", AND_STRING));
             }
 
             number /= 1000;
         }
 
-        return numberBuilder.toString().trim();
+        return numberBuilder.toString();
     }
 
     private boolean canHandleNumber(int numberLength) {
